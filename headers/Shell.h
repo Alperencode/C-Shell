@@ -1,25 +1,28 @@
 #ifndef SHELL_H
 #define SHELL_H
 
-#define BUFFSIZE 1024
+#define RL_BUFSIZE 1024 // Read Line buffer
+#define SL_BUFSIZE 64 // Split Line buffer
 
 void loop();
 char* readLine();
-char** splitLine();
-int execute();
+char** splitLine(char*, const char*);
+int execute(char**);
 
-void die();
+void die(const char*);
 
+/**
+ * Main Shell loop
+ */
 void loop(){
     char *line, **args;
     int status;
-
 
     do{
         printf("\n>");
 
         line = readLine();
-        args = splitLine(line);
+        args = splitLine(line, " \r\r\n\a");
         status = execute(args);
 
         free(line);
@@ -40,7 +43,7 @@ char* readLine(){
     int position;
 
     // Assigning buffersize to variable to increase it later
-    int bufsize = BUFFSIZE;
+    int bufsize = RL_BUFSIZE;
 
     // Input char
     char c;
@@ -48,8 +51,7 @@ char* readLine(){
     // Allocating buffer for input line
     char *buffer = malloc(sizeof(char) * bufsize);
 
-    // Error handling for buffer
-    if(!buffer) die("Allocation error");
+    if(!buffer) die("Allocation error [RL buffer]");
 
     while(1){
 
@@ -70,11 +72,56 @@ char* readLine(){
             bufsize += BUFFSIZE;
             buffer = realloc(buffer, bufsize);
 
-            if(!buffer) die("Allocation error");
+            if(!buffer) die("Allocation error [RL buffer]");
         }
-
+    }
 }
 
+/**
+ * Splits the given line with given delims
+ *
+ * @param line Line to split 
+ * @param delims Delims to split the given line
+ * @return Array of strings that splitted by delims
+ */
+char** splitLine(char* line, const char* delims){
+    
+    // Position tokens array
+    int position;
+
+    // Assigning buffersize to variable to increase it later
+    int bufsize = SL_BUFSIZE;
+
+    // Allocating space for tokens
+    char** tokens = malloc(sizeof(char*) * bufsize);
+    char* token;
+
+    if(!tokens) die("Allocation error [SL tokens]");
+
+    // Gathering first token pointer
+    token = strok(line, delims);
+
+    // Walk through other tokens
+    while(token != NULL){
+
+        // Assigning current token to tokens
+        tokens[position] = token;
+        position += 1;
+
+        // If buffer exceeds, reallocate space
+        if(position >= bufsize){
+            bufsize += SL_BUFSIZE;
+            tokens = realloc(tokens, sizeof(char*) * bufsize);
+            if(!tokens) die("Allocation error [SL tokens]");
+        }
+
+        // Next token
+        token = strok(NULL, delims);
+    }
+
+    tokens[position] = NULL;
+    return tokens;
+}
 
 /**
  * Prints an error message and exits the program.
