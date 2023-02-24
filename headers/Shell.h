@@ -69,7 +69,7 @@ char* readLine(){
 
         // If buffer exceeds, reallocate space
         if(position >= bufsize){
-            bufsize += BUFFSIZE;
+            bufsize += RL_BUFSIZE;
             buffer = realloc(buffer, bufsize);
 
             if(!buffer) die("Allocation error [RL buffer]");
@@ -99,7 +99,7 @@ char** splitLine(char* line, const char* delims){
     if(!tokens) die("Allocation error [SL tokens]");
 
     // Gathering first token pointer
-    token = strok(line, delims);
+    token = strtok(line, delims);
 
     // Walk through other tokens
     while(token != NULL){
@@ -116,7 +116,7 @@ char** splitLine(char* line, const char* delims){
         }
 
         // Next token
-        token = strok(NULL, delims);
+        token = strtok(NULL, delims);
     }
 
     tokens[position] = NULL;
