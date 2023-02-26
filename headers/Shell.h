@@ -7,6 +7,7 @@
 void loop();
 char* readLine();
 char** splitLine(char*, const char*);
+int launch(char**);
 int execute(char**);
 
 void die(const char*);
@@ -121,6 +122,49 @@ char** splitLine(char* line, const char* delims){
 
     tokens[position] = NULL;
     return tokens;
+}
+
+/**
+ * Exp.
+ *
+ * @param args
+ * @return 1 to indicate that its ready for another input
+ */
+int launch(char** args){
+    // PID    : Parent ID
+    // exec() : Replaces the current process with an entirely new one. 
+
+    // pid_t: signed integer type for representing process ID
+    pid_t pid;
+    int status;
+
+    // fork() : Makes duplicate of the process and starts them both running (Parent-Child)
+    pid = fork();
+
+    if(pid < 0)
+        die("Fork error [EXE]");
+    
+    else if(pid == 0){
+        // Child process
+
+        // execvp(): type of exec command, which takes command and its args
+        if(execvp(args[0], args) == -1) die("Execution error [EXE]");
+
+        // die();
+    }
+    else
+        // Parent process
+        do{
+
+            // Parent process waits until child process finish
+            waitpid(pid, &status, WUNTRACED);
+
+            // WIFEXITED   : program exited
+            // WIFSIGNALED : program killed by signal 
+        }while(!WIFEXITED(status) && !WIFSIGNALED(status));
+
+    return 1;
+
 }
 
 /**
