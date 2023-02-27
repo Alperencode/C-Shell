@@ -4,20 +4,11 @@
 #define RL_BUFSIZE 1024 // Read Line buffer
 #define SL_BUFSIZE 64 // Split Line buffer
 
-// Shell functions
 void loop();
 char* readLine();
 char** splitLine(char*, const char*);
 int launch(char**);
 int execute(char**);
-
-// BuildIn functions
-int buildInLength()
-int cd(char **args);
-int help(char **args);
-int exit(char **args);
-
-void die(const char*);
 
 /**
  * Main Shell loop
@@ -25,9 +16,10 @@ void die(const char*);
 void loop(){
     char *line, **args;
     int status;
+    clear();
 
     do{
-        printf("\n>");
+        printf("\n> ");
 
         line = readLine();
         args = splitLine(line, " \r\r\n\a");
@@ -48,7 +40,7 @@ void loop(){
 char* readLine(){
 
     // Position for line
-    int position;
+    int position = 0;
 
     // Assigning buffersize to variable to increase it later
     int bufsize = RL_BUFSIZE;
@@ -62,7 +54,6 @@ char* readLine(){
     if(!buffer) die("Allocation error [RL buffer]");
 
     while(1){
-
         c = getchar();
 
         // If input ends, add null char and return
@@ -95,7 +86,7 @@ char* readLine(){
 char** splitLine(char* line, const char* delims){
     
     // Position tokens array
-    int position;
+    int position = 0;
 
     // Assigning buffersize to variable to increase it later
     int bufsize = SL_BUFSIZE;
@@ -138,14 +129,13 @@ char** splitLine(char* line, const char* delims){
  * @return <Summary>
  */
 int launch(char** args){
-    // PID    : Parent ID
-    // exec() : Replaces the current process with an entirely new one. 
+    // exec: Replaces the current process with an entirely new one. 
 
     // pid_t: signed integer type for representing process ID
     pid_t pid;
-    int status;
+    int status = 0;
 
-    // fork() : Makes duplicate of the process and starts them both running (Parent-Child)
+    // fork: Makes duplicate of the process and starts them both running (Parent-Child)
     pid = fork();
 
     if(pid < 0)
@@ -153,10 +143,8 @@ int launch(char** args){
     
     else if(pid == 0){
         // Child process
-
-        // execvp(): type of exec command, which takes command and its args
-        if(execvp(args[0], args) == -1) die("Execution error [EXE]");
-        // die();
+        // execvp: type of exec command, which takes command and its args
+        if(execvp(args[0], args) == -1) die("Execution error [Command not found]");
     }
     else
         // Parent process
@@ -169,17 +157,25 @@ int launch(char** args){
         }while(!WIFEXITED(status) && !WIFSIGNALED(status));
 
     return 1;
-
 }
 
 /**
- * Prints an error message and exits the program.
+ * <Summary>
  *
- * @param message The error message to print.
+ * @param args <Summary>
+ * @return <Summary>
  */
-void die(const char* message){
-    perror(message);
-    exit(1);
+int execute(char **args){
+    // If command is empty, return
+    if(args[0] == NULL) return 1;
+
+    // Check if command is build-in
+    int len = buildInLength();
+    for(int i=0; i<len; i++)
+        if(strcmp(args[0], buildInCommands[i]) == 0)
+            return (*buildInFunc[i])(args);
+
+    return launch(args);
 }
 
 #endif
