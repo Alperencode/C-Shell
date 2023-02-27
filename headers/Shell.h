@@ -12,6 +12,7 @@ int launch(char**);
 int execute(char**);
 
 // BuildIn functions
+int buildInLength()
 int cd(char **args);
 int help(char **args);
 int exit(char **args);
@@ -131,10 +132,10 @@ char** splitLine(char* line, const char* delims){
 }
 
 /**
- * Exp.
+ * <Summary>
  *
- * @param args
- * @return 1 to indicate that its ready for another input
+ * @param args <Summary>
+ * @return <Summary>
  */
 int launch(char** args){
     // PID    : Parent ID
@@ -155,13 +156,11 @@ int launch(char** args){
 
         // execvp(): type of exec command, which takes command and its args
         if(execvp(args[0], args) == -1) die("Execution error [EXE]");
-
         // die();
     }
     else
         // Parent process
         do{
-
             // Parent process waits until child process finish
             waitpid(pid, &status, WUNTRACED);
 

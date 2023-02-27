@@ -3,6 +3,12 @@
 
 char *buildInCommands[] = {"ls", "cd", "help", "exit"};
 
+/**
+ * <Summary>
+ *
+ * @param args <Summary>
+ * @return <Summary>
+ */
 int ls(char **args){
     DIR *dir;
     struct dirent *ent;
@@ -21,6 +27,12 @@ int ls(char **args){
     return 1;
 }
 
+/**
+ * <Summary>
+ *
+ * @param args <Summary>
+ * @return <Summary>
+ */
 int cd(char **args){
 
     if(chdir(args[1]) != 0) die("Command error [cd]");
@@ -28,19 +40,39 @@ int cd(char **args){
     return 1;
 }
 
-int help(){
+/**
+ * <Summary>
+ *
+ * @return <Summary>
+ */
+int buildInLength(){
+	return (int)(sizeof(buildInCommands) / sizeof(char*));
+}
+
+/**
+ * <Summary>
+ *
+ * @param args <Summary>
+ * @return <Summary>
+ */
+int help(char **args){
     printf("\nC-Shell (UNIX)\n");
     printf("Type program name and arguments\n");
     printf("Followings are build in commands:\n");
 
-    int len = sizeof(buildInCommands) / sizeof(char*);
-    for(int i=0; i<len; i++)
+    for(int i=0; i<buildInLength(); i++)
         printf("%s\n", buildInCommands[i]);
 
    return 1;
 }
 
-int exit(){
+/**
+ * <Summary>
+ *
+ * @param args <Summary>
+ * @return <Summary>
+ */
+int exit(char **args){
     return 0;
 }
 
