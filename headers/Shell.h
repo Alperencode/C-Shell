@@ -4,11 +4,17 @@
 #define RL_BUFSIZE 1024 // Read Line buffer
 #define SL_BUFSIZE 64 // Split Line buffer
 
+// Shell functions
 void loop();
 char* readLine();
 char** splitLine(char*, const char*);
 int launch(char**);
 int execute(char**);
+
+// BuildIn functions
+int cd(char **args);
+int help(char **args);
+int exit(char **args);
 
 void die(const char*);
 
