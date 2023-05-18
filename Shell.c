@@ -4,7 +4,7 @@
 #define SL_BUFSIZE 64 // Split Line buffer
 
 /**
- * Main Shell loop
+ * Main shell loop in order to read and split the line then execute the command 
  */
 void loop(){
     char *line, **args;
@@ -116,10 +116,10 @@ char** splitLine(char* line, const char* delims){
 }
 
 /**
- * <Summary>
+ * Executes the given arguments using execvp() function
  *
- * @param args <Summary>
- * @return <Summary>
+ * @param args Command arguments to execute
+ * @return 1 for success, executes die() function for any errors
  */
 int launch(char** args){
     // exec: Replaces the current process with an entirely new one. 
@@ -153,10 +153,10 @@ int launch(char** args){
 }
 
 /**
- * <Summary>
+ * Executes the given argument by checking if it's build-in or not
  *
- * @param args <Summary>
- * @return <Summary>
+ * @param args Command arguments to execute
+ * @return 1 for success, executes die() function for any errors
  */
 int execute(char **args){
     // If command is empty, return

@@ -9,19 +9,19 @@ int (*buildInFunc[]) (char **) = {
 };
 
 /**
- * <Summary>
+ * Returns the length of build in commands
  *
- * @return <Summary>
+ * @return Length of build in commands
  */
 int buildInLength(){
 	return (int)(sizeof(buildInCommands) / sizeof(char*));
 }
 
 /**
- * <Summary>
+ * Build in 'ls' command to list files
  *
- * @param args <Summary>
- * @return <Summary>
+ * @param args arguments of ls command
+ * @return 1 for success, executes die() function for any errors
  */
 int ls(char **args){
     DIR *dir;
@@ -55,10 +55,10 @@ int ls(char **args){
 }
 
 /**
- * <Summary>
+ * Build in 'Change Directory' command
  *
- * @param args <Summary>
- * @return <Summary>
+ * @param args Arguments for cd command (E.g: '..', 'path/')
+ * @return 1 for success, executes die() function for any errors
  */
 int cd(char **args){
 
@@ -69,10 +69,9 @@ int cd(char **args){
 
 
 /**
- * <Summary>
+ * Build-in help command to list Build-in commands 
  *
- * @param args <Summary>
- * @return <Summary>
+ * @return Returns 1 after printing help information
  */
 int help(){
     printf("\n == C-Shell (UNIX) == \n");
@@ -86,10 +85,9 @@ int help(){
 }
 
 /**
- * <Summary>
+ * Return 0 to exit the program
  *
- * @param args <Summary>
- * @return <Summary>
+ * @return 0 to exit
  */
 int programExit(){
     return 0;
